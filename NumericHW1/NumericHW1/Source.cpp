@@ -2,27 +2,32 @@
 
 using namespace std;
 
-int i = 0;
-int dcount = 0;
+int base;					//?????????????
+int i = 0;					//???????????????????
+int dcount = 0;				//???????????????????????????????????
 char ans[1000];
-char input[100];
-float dcheck[10];
-void cbten2two(int n)
+bool acheck = false;		//????output ?????????????0??????????
+char input[100];		
+char output[16] = { '0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F' };
+float dcheck[10];			//???????????????????????????
+void cbten2base(int n)		//???????????????????????
 {
+	//cout << atoi(input) << endl;
 	if (n >= 2)
 	{
-		cbten2two(n / 2);
-		ans[i] = (n % 2) + '0';
+		cbten2base(n / base);
+		ans[i] = output[(n % base)] ;
 		i++;
 	}
 	else
 	{
-		ans[i] = (n % 2) + '0';
+		ans[i] = output[(n % base)];
 		i++;
 	}
 }
-void cbdten2two(float n)
+void cbdten2base(float n)	//????????????????????
 {
+	//cout << atof(input) << endl;
 	n = roundf(n * 100000) / 100000.0;
 	bool sc = false;
 	for (int j = 0; j <= dcount; j++)
@@ -32,36 +37,51 @@ void cbdten2two(float n)
 	}
 	if (sc == false)
 	{
-		if (n * 2 < 1)
+		if (n * base < base)
 		{
 			dcheck[dcount] = n;
 			dcount++;
-			ans[i] = '0';
+			ans[i] = output[(int) floor(n*base)];
 			i++;
-			cbdten2two(n * 2);
+			cbdten2base((n * base)- floor(n*base));
 		}
 		else
 		{
 			dcheck[dcount] = n;
 			dcount++;
-			ans[i] = '1';
+			ans[i] = output[(int) floor(n*base)];
 			i++;
-			cbdten2two((n * 2) - 1);
+			cbdten2base((n * base) - base);
 		}
 	}
 
 }
 int main()
 {
-	cin >> input;
-	cbten2two(atoi(input));
-	if (((atof(input)) - atoi(input)) != 0)
+	cin >> base >> input;
+	cbten2base(atoi(input));
+	if (((atof(input)) - atoi(input)) < 1)		//??????????????????????? '.'
 	{
 		ans[i] = '.';
 		i++;
-		cbdten2two((atof(input)) - atoi(input));
+		cbdten2base((atof(input)) - atoi(input));
 	}
-	cout << ans << endl;
+	i = 0;
+	while (ans[i] != '\0')
+	{
+		if (acheck == false)
+		{
+			if (ans[i] != '0' || ans[i+1] == '.')
+			{
+				acheck = true;
+				cout << ans[i];
+			}
+		}
+		else
+			cout << ans[i];
+		i++;
+	}
+	cout << endl;
 	system("pause");
 	return 0;
 }
